@@ -6,6 +6,7 @@ import (
 		"github.com/urfave/cli"
 		finder "github.com/b4b4r07/go-finder"
 		"github.com/b4b4r07/go-finder/source"
+		"os/exec"
 		)
 
 func main() {
@@ -15,7 +16,7 @@ func main() {
 	app.Version = "0.0.1"
 	app.Action = func (context *cli.Context) error {
 		if context.Bool("show") {
-			fzf, err := finder.New("fzf")
+			fzf, err := finder.New("fzf","--reverse", "--height", "40")
 			if err != nil {
 				panic(err)
 			}
@@ -31,7 +32,9 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-			fmt.Printf("selected items:%#v\n", items)
+			//fmt.Printf("cd %s", items[0])
+			print("cd "+items[0])
+			err = exec.Command("cd "+ items[0]).Run()
 		}
 		return nil
 	}
@@ -39,6 +42,10 @@ func main() {
 		cli.BoolFlag {
 				Name: "show, s",
 				Usage: "show",
+			},
+		cli.BoolFlag {
+				Name: "branch, b",
+				Usage: "branch",
 			},
 	}
 	app.Run(os.Args)
